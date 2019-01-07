@@ -1,5 +1,5 @@
-*.class
-.idea/*
+*/*.class
+*/.idea/*
 *~
-a.out
+cpp/a.out
 rs/target/*
