@@ -2,4 +2,6 @@
 */.idea/*
 *~
 cpp/a.out
-rs/target/*
+*/target
+*/project
+*/target
