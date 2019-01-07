@@ -5,7 +5,7 @@ import spire.syntax.fractional._
 import scala.math._
 
 class Interval[T: Fractional : Ordering](val x1: T, val f1: T, val x2: T, val f2: T) {
-  /*             f2
+  /*             
   * |        _.*|
   * |     _.*   |
   * |   .*      f2

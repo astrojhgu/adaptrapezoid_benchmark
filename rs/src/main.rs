@@ -3,10 +3,6 @@ use num_traits::float::FloatConst;
 use std::collections::linked_list::LinkedList;
 use std::fmt::Debug;
 
-//use std::fs::File;
-//use std::io::Write;
-
-#[derive(Clone, Debug, PartialEq)]
 struct Interval<T>
 where
     T: Float,
@@ -60,31 +56,6 @@ where
     }
 }
 
-impl<T> std::cmp::Eq for Interval<T> where T: Float {}
-
-impl<T> std::cmp::PartialOrd for Interval<T>
-where
-    T: Float,
-{
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(if self.subsum.abs() > other.subsum.abs() {
-            std::cmp::Ordering::Less
-        } else if self.subsum.abs() < other.subsum.abs() {
-            std::cmp::Ordering::Greater
-        } else {
-            std::cmp::Ordering::Equal
-        })
-    }
-}
-
-impl<T> std::cmp::Ord for Interval<T>
-where
-    T: Float,
-{
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.partial_cmp(other).unwrap()
-    }
-}
 
 fn refine_iter<T>(
     func: &dyn Fn(T) -> T,
@@ -134,28 +105,6 @@ fn sum_up<T>(bh: LinkedList<Interval<T>>) -> T
 where
     T: Float + Debug,
 {
-    /*
-let bh1=bh.clone();
-let mut bh1:Vec<_>=bh1.into_iter().collect();
-(&mut bh1).sort_by(|a,b|{
-    if a.x1<b.x1 {
-        std::cmp::Ordering::Less
-    }else if a.x1>b.x1{
-        std::cmp::Ordering::Greater
-    }else{
-        std::cmp::Ordering::Equal
-    }
-});
-
-
-let mut f=File::create("dump1.txt").unwrap();
-bh1.into_iter().for_each(|interv|{
-    writeln!(f, "{:?} {}", interv.x1, 0.0).unwrap();
-    writeln!(f, "{:?} {:?}", interv.x1, interv.f1).unwrap();
-    writeln!(f, "{:?} {:?}", interv.x2, interv.f2).unwrap();
-});
-*/
-
     bh.into_iter().fold(T::zero(), |a, b| a + b.subsum)
 }
 

@@ -19,7 +19,7 @@ struct Interval{
     T subsum;
 
     bool operator<(const Interval<T>& rhs)const{
-        return subsum<rhs.subsum;
+        return std::abs(subsum)<std::abs(rhs.subsum);
     }
 
     std::optional<std::pair<Interval<T>, Interval<T> > > try_refine(const std::function<T(T)>& func, 
