@@ -1,0 +1,8 @@
+[package]
+name = "rs"
+version = "0.1.0"
+authors = ["Gu Junhua <jhgu@nao.cas.cn>"]
+edition = "2018"
+
+[dependencies]
+num-traits = '0.2.6'
