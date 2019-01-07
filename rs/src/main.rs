@@ -1,17 +1,15 @@
-#![feature(generators)]
 use num_traits::float::Float;
-use std::collections::linked_list::LinkedList;
-//use std::collections::BinaryHeap;
-use std::fmt::Debug;
 use num_traits::float::FloatConst;
+use std::collections::linked_list::LinkedList;
+use std::fmt::Debug;
 
-use std::fs::File;
-use std::io::Write;
+//use std::fs::File;
+//use std::io::Write;
 
 #[derive(Clone, Debug, PartialEq)]
 struct Interval<T>
-    where
-        T: Float,
+where
+    T: Float,
 {
     x1: T,
     f1: T,
@@ -21,16 +19,16 @@ struct Interval<T>
 }
 
 enum RefineResult<T>
-    where
-        T: Float,
+where
+    T: Float,
 {
     NoMorRefine(Interval<T>),
     Refined(Interval<T>, Interval<T>),
 }
 
 impl<T> Interval<T>
-    where
-        T: Float,
+where
+    T: Float,
 {
     pub fn try_refine(self, func: &dyn Fn(T) -> T, eps: T) -> RefineResult<T> {
         let one = T::one();
@@ -65,8 +63,8 @@ impl<T> Interval<T>
 impl<T> std::cmp::Eq for Interval<T> where T: Float {}
 
 impl<T> std::cmp::PartialOrd for Interval<T>
-    where
-        T: Float,
+where
+    T: Float,
 {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         Some(if self.subsum.abs() > other.subsum.abs() {
@@ -80,8 +78,8 @@ impl<T> std::cmp::PartialOrd for Interval<T>
 }
 
 impl<T> std::cmp::Ord for Interval<T>
-    where
-        T: Float,
+where
+    T: Float,
 {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         self.partial_cmp(other).unwrap()
@@ -94,8 +92,8 @@ fn refine_iter<T>(
     eps: T,
     original_width: T,
 ) -> (LinkedList<Interval<T>>, LinkedList<Interval<T>>)
-    where
-        T: Float,
+where
+    T: Float,
 {
     let mut updated_not_refined = LinkedList::new();
     for i in not_refined.into_iter() {
@@ -116,8 +114,8 @@ fn refine_until_converged<T>(
     init_list: LinkedList<Interval<T>>,
     eps: T,
 ) -> LinkedList<Interval<T>>
-    where
-        T: Float,
+where
+    T: Float,
 {
     let original_width = init_list.back().unwrap().x2 - init_list.front().unwrap().x1;
     let mut unrefined_list = init_list;
@@ -132,9 +130,9 @@ fn refine_until_converged<T>(
     }
 }
 
-fn sum_up<T>(mut bh: LinkedList<Interval<T>>) -> T
-    where
-        T: Float + Debug,
+fn sum_up<T>(bh: LinkedList<Interval<T>>) -> T
+where
+    T: Float + Debug,
 {
     /*
 let bh1=bh.clone();
@@ -158,14 +156,12 @@ bh1.into_iter().for_each(|interv|{
 });
 */
 
-    let mut result =bh.into_iter().fold(T::zero(), |a,b|{a+b.subsum});
-
-    result
+    bh.into_iter().fold(T::zero(), |a, b| a + b.subsum)
 }
 
 pub fn integrate<T>(func: &dyn Fn(T) -> T, eps: T, init_ticks: &[T]) -> T
-    where
-        T: Float + Debug,
+where
+    T: Float + Debug,
 {
     let init_list: LinkedList<_> = init_ticks[1..]
         .iter()
@@ -185,9 +181,15 @@ pub fn integrate<T>(func: &dyn Fn(T) -> T, eps: T, init_ticks: &[T]) -> T
     sum_up(refine_until_converged(func, init_list, eps))
 }
 
-
 fn main() {
-    for i in 0..100{
-        println!("{}",integrate(&|x:f64|{x.powi(2).sin()}, 1e-10, &[0.0,1.0, 2.0,  (8.0*f64::PI()).sqrt()]));
+    for _i in 0..100 {
+        println!(
+            "{}",
+            integrate(
+                &|x: f64| x.powi(2).sin(),
+                1e-10,
+                &[0.0, 1.0, 2.0, (8.0 * f64::PI()).sqrt()]
+            )
+        );
     }
 }
