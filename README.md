@@ -6,8 +6,7 @@ Currently implemented languages:
 3. Scala
 
 # Directories
-rs: Rust
-cpp: C++
-adaptrape: Scala without generic
-adaptrape2: Scala with generic
-
+1. rs: Rust
+2. cpp: C++
+3. adaptrape: Scala without generic
+4. adaptrape2: Scala with generic
