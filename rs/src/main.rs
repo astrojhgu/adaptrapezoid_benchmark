@@ -18,7 +18,7 @@ enum RefineResult<T>
 where
     T: Float,
 {
-    NoMorRefine(Interval<T>),
+    NoMoreRefine(Interval<T>, Interval<T>),
     Refined(Interval<T>, Interval<T>),
 }
 
@@ -26,32 +26,39 @@ impl<T> Interval<T>
 where
     T: Float,
 {
-    pub fn try_refine(self, func: &dyn Fn(T) -> T, eps: T) -> RefineResult<T> {
+    pub fn split(self, func:&dyn Fn(T)->T)->(Self, Self){
         let one = T::one();
         let two = one + one;
         let xm = (self.x1 + self.x2) / two;
         let fm = func(xm);
         let ss1 = (self.f1 + fm) * (xm - self.x1) / two;
         let ss2 = (fm + self.f2) * (self.x2 - xm) / two;
-        if (ss1 + ss2 - self.subsum).abs() <= eps {
-            RefineResult::NoMorRefine(self)
+        (
+            Interval {
+                x1: self.x1,
+                f1: self.f1,
+                x2: xm,
+                f2: fm,
+                subsum: ss1,
+            },
+            Interval {
+                x1: xm,
+                f1: fm,
+                x2: self.x2,
+                f2: self.f2,
+                subsum: ss2,
+            },
+        )
+    }
+
+    pub fn try_refine(self, func: &dyn Fn(T) -> T, eps: T) -> RefineResult<T> {
+        let ss = self.subsum;
+        let (i1, i2) = self.split(func);
+
+        if (i1.subsum + i2.subsum - ss).abs() <= eps {
+            RefineResult::NoMoreRefine(i1, i2)
         } else {
-            RefineResult::Refined(
-                Interval {
-                    x1: self.x1,
-                    f1: self.f1,
-                    x2: xm,
-                    f2: fm,
-                    subsum: ss1,
-                },
-                Interval {
-                    x1: xm,
-                    f1: fm,
-                    x2: self.x2,
-                    f2: self.f2,
-                    subsum: ss2,
-                },
-            )
+            RefineResult::Refined(i1, i2)
         }
     }
 }
@@ -70,7 +77,10 @@ where
     for i in not_refined.into_iter() {
         let interval_width = i.x2 - i.x1;
         match i.try_refine(func, eps / original_width * interval_width) {
-            RefineResult::NoMorRefine(i1) => refined_result.push_back(i1),
+            RefineResult::NoMoreRefine(i1, i2) => {
+                refined_result.push_back(i1);
+                refined_result.push_back(i2);
+            }
             RefineResult::Refined(i1, i2) => {
                 updated_not_refined.push_back(i1);
                 updated_not_refined.push_back(i2);
