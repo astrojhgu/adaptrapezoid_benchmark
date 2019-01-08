@@ -101,12 +101,25 @@ where
     }
 }
 
-fn sum_up<T>(bh: LinkedList<Interval<T>>) -> T
-where
-    T: Float + Debug,
+fn sum_up<T>(il: LinkedList<Interval<T>>) -> T
+    where
+        T: Float + Debug,
 {
-    bh.into_iter().fold(T::zero(), |a, b| a + b.subsum)
+    let mut sorted: Vec<_> = il.into_iter().map(|x| x.subsum).collect();
+
+    (&mut sorted).sort_by(|a, b| {
+        if a.abs() < b.abs() {
+            std::cmp::Ordering::Less
+        } else if a.abs() > b.abs() {
+            std::cmp::Ordering::Greater
+        } else {
+            std::cmp::Ordering::Equal
+        }
+    });
+
+    sorted.into_iter().fold(T::zero(), |a, b| a + b)
 }
+
 
 pub fn integrate<T>(func: &dyn Fn(T) -> T, eps: T, init_ticks: &[T]) -> T
 where
