@@ -16,7 +16,7 @@ class Interval[T: Fractional : Ordering](val x1: T, val f1: T, val x2: T, val f2
   *
   * so that subsum=(f1+f2)*(x2-x1)/2
   * */
-  val subsum = (f1 + f2) * (x2 - x1) / 2.0;
+  val subsum = (f1 + f2) * (x2 - x1) / (Fractional[T].one+Fractional[T].one)
 
   def split(func: T => T): (Interval[T], Interval[T]) = {
     /*
