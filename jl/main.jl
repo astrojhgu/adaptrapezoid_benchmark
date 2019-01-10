@@ -1,4 +1,4 @@
-#Pkg.add("DataStructures.jl")
+Pkg.add("DataStructures.jl")
 using DataStructures
 
 struct Interval
