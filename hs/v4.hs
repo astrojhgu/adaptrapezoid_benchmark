@@ -1,9 +1,6 @@
 module Main where
     import Data.List
 
-    -- represent an interval
-    -- a1 a2 are the lower and upper boundary of this interval
-    -- f_i=func a_i, where i=1,2 respectively
     data Point a=Point a a deriving Show -- a1 f1 a2 f2 subsum 
 
     midpoint::(Fractional a)=>(a->a)->(Point a)->(Point a)->(Point a)
