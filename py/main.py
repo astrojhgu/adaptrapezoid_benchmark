@@ -1,60 +1,37 @@
 #!/usr/bin/env python
 
-class Interval:
-    def __init__(self, x1, f1, x2, f2):
-        self.x1=x1
-        self.f1=f1
-        self.x2=x2
-        self.f2=f2
-        self.subsum=(f1+f2)*(x2-x1)/2.0
-        pass
-
-    def split(self, func):
-        xm=(self.x1+self.x2)/2
+def integrate_iter(func, eps, points):
+    areas=[]
+    if len(points)<2:
+        return 0.0
+    right=points[-1]
+    sz=len(points)
+    while sz>1 :
+        left=points[-2]
+        xm=(left[0]+right[0])/2.
         fm=func(xm)
-        return (Interval(self.x1, self.f1, xm, fm), Interval(xm, fm, self.x2, self.f2))
-
-    def try_refine(self, func, eps):
-        (i1,i2)=self.split(func)
-        return (i1,i2,abs(i1.subsum+i2.subsum-self.subsum)<eps)
-
-    def interval_width(self):
-        return self.x2-self.x1
-
-
-def refine_iter(func, unrefined, refined, eps, full_width):
-    new_unrefined=[]
-    for i in unrefined:
-        (i1,i2, finished)=i.try_refine(func, eps/full_width*i.interval_width())
-        if finished:
-            refined.append(i1)
-            refined.append(i2)
+        if abs(left[1]+right[1]-2.0*fm)<=eps:
+            area=(left[1]+right[1]+fm*2.0)*(right[0]-left[0])/4.0
+            areas.append(area)
+            points.pop()
+            right=left
+            sz-=1
         else:
-            new_unrefined.append(i1)
-            new_unrefined.append(i2)
-    return (new_unrefined, refined)
+            points[-1]=(xm, fm)
+            points.append(right)
+            sz+=1
+    areas.sort(key=abs)
+    return sum(areas)
 
-
-def refine_until_converged(func, initial_intervals, eps, full_width):
-    refined=[]
-    unrefined=initial_intervals
-    while unrefined:
-        unrefined, refined=refine_iter(func, unrefined, refined, eps, full_width)
-    return refined
-
-def init_intervals(func, ticks):
-    return [Interval(x1,func(x1),x2,func(x2)) for (x1,x2) in zip(ticks[0::], ticks[1::])]
 
 def integrate(func, ticks, eps):
-    full_width=ticks[-1]-ticks[0]
-    refined=refine_until_converged(func, init_intervals(func, ticks), eps, full_width)
+    eps1=eps*4.0/(ticks[-1]-ticks[0])
+    points=[(x, func(x))for x in ticks]
+    return integrate_iter(func, eps1, points)
 
-    subsums=[i.subsum for i in refined]
-    result=0.0
-    subsums.sort(key=abs)
-    for i in subsums:
-        result+=i
-    return result
+
 
 import math
-print(integrate(lambda x:math.sin(x**2), [0.0,1.0, 2.0, math.sqrt(8*math.pi)],1e-10))
+for i in range(0,100):
+    #print(integrate(lambda x:math.sin(x**2), [0.0,1.0, 2.0, math.sqrt(8*math.pi)],1e-10))
+    print(integrate(lambda x: x ** 2, [0.0, 1.0], 1e-10))

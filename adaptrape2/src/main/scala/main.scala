@@ -22,34 +22,62 @@ object Integrate {
 
 
   @tailrec
-  final def integrate_iter[T:Fractional:Ordering](func:T=>T, eps:T, points:List[Point[T]], areas:List[T]):(List[Point[T]], List[T])={
+  final def integrate_rec[T:Fractional:Ordering](func:T=>T, eps:T, points:List[Point[T]], areas:List[T]):(List[Point[T]], List[T])={
     points match {
       case left::right::others=>{
         val midpoint=this.midpoint(func, left, right)
         if (Fractional[T].abs(left.f+right.f-midpoint.f*2)<=eps){
-          integrate_iter(func, eps, right::others, area(left, right)::areas)
+          integrate_rec(func, eps, right::others, area(left, right)::areas)
         }else{
-          integrate_iter(func, eps, left::midpoint::right::others, areas)
+          integrate_rec(func, eps, left::midpoint::right::others, areas)
         }
       }
       case _ =>(points, areas)
     }
   }
 
-  final def perform[T:Fractional:Ordering](func:T=>T, init_ticks:List[T], eps:T):T={
+  final def perform_rec[T:Fractional:Ordering](func:T=>T, init_ticks:List[T], eps:T):T={
     val points=init_ticks.map(x=>new Point[T](x, func(x)))
     val eps1=eps*4/(init_ticks.last-init_ticks.head)
-    val areas=integrate_iter(func, eps1, points, Nil)._2
+    val areas=integrate_rec(func, eps1, points, Nil)._2
     areas.sortBy(x => Fractional[T].abs(x)).foldLeft(Fractional[T].zero){(a,b)=>{a+b}}
   }
+
+  final def integrate_iter[T:Fractional:Ordering](func:T=>T, eps:T, points:List[Point[T]], areas:List[T]):(List[Point[T]], List[T])= {
+    points match {
+      case left::right::others=>{
+        val midpoint=this.midpoint(func, left, right)
+        if (Fractional[T].abs(left.f+right.f-midpoint.f*2)<=eps){
+          (right::others, area(left, right)::areas)
+        }else{
+          (left::midpoint::right::others, areas)
+        }
+      }
+      case _ =>(points, areas)
+    }
+  }
+
+  final def perform_iter[T:Fractional:Ordering](func:T=>T, init_ticks:List[T], eps:T):T={
+    var points=init_ticks.map(x=>new Point[T](x, func(x)))
+    val eps1=eps*4/(init_ticks.last-init_ticks.head)
+    var areas:List[T]=Nil
+
+    while (points.size>1){
+      val result=integrate_iter(func, eps1, points, areas)
+      points=result._1
+      areas=result._2
+    }
+    areas.sortBy(x => Fractional[T].abs(x)).foldLeft(Fractional[T].zero){(a,b)=>{a+b}}
+  }
+
 }
 
 
 object Main {
   def main(args: Array[String]): Unit = {
     for (i <- 1 to 100) {
-      val xx = Integrate.perform[Double](x => sin(x * x), List(0.0, 1.0, 2.0, sqrt(8.0 * scala.math.Pi)), 1e-10);
-      //val xx = Integrate.perform[Double](x => (x * x*x), List(0.0, 1.0), 1e-10);
+      //val xx = Integrate.perform_rec[Double](x => sin(x * x), List(0.0, 1.0, 2.0, sqrt(8.0 * scala.math.Pi)), 1e-10);
+      val xx = Integrate.perform_rec[Double](x => (x * x), List(0.0, 1.0), 1e-10);
       System.out.println(xx);
     }
   }
