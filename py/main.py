@@ -30,8 +30,6 @@ def integrate(func, ticks, eps):
     return integrate_iter(func, eps1, points)
 
 
-
-import math
 for i in range(0,100):
     #print(integrate(lambda x:math.sin(x**2), [0.0,1.0, 2.0, math.sqrt(8*math.pi)],1e-10))
     print(integrate(lambda x: x ** 2, [0.0, 1.0], 1e-10))
