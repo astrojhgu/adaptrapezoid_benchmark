@@ -8,5 +8,6 @@ Currently implemented languages:
 # Directories
 1. rs: Rust
 2. cpp: C++
-3. adaptrape: Scala without generic
-4. adaptrape2: Scala with generic
+3. hs: Haskell
+4. py: Python
+3. scala: Scala
