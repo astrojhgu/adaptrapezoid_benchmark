@@ -8,7 +8,7 @@ end
 
 function integrate(func::Function, ticks::Array{Float64,1}, eps::Float64)::Float64
     if length(ticks)<2
-        return 0.9
+        return 0.0
     end
     points::Array{Point, 1}=[Point(x, func(x)) for x in ticks]
     full_width=last(ticks)-first(ticks)
