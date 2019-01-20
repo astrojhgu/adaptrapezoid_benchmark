@@ -6,7 +6,7 @@
 #include <numeric>
 #include <utility>
 #include <vector>
- 
+
 template <typename T>
 struct Point {
   T x, f;
