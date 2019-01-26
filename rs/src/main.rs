@@ -21,21 +21,23 @@ where T: Float + Debug,
     let full_width=*init_ticks.last().unwrap()-*init_ticks.first().unwrap();
     let mut areas=Vec::<T>::new();
     let mut points:Vec<_>=init_ticks.iter().map(|&x|Point::<T>{x, f:func(x)}).collect();
-    let mut right=*points.last().unwrap();
+    //let mut right=*points.last().unwrap();
+    let mut right;
     let mut sz=points.len();
     let eps=eps*four/full_width;
     while sz>1 {
-        let left=points[sz-2];
+        right=points.pop().unwrap();
+        let left=*points.last().unwrap();
         let mid=(left.x+right.x)*half;
         let fmid=func(mid);
         if (left.f+right.f-fmid*two).abs()<=eps{
             areas.push((left.f+right.f+fmid*two)*(right.x-left.x)*quarter);
-            points.pop();
-            right=left;
+            //points.pop();
+            //right=left;
             sz-=1;
         }
         else{
-            points.pop();
+            //points.pop();
             points.push(Point::<T>{x:mid, f:fmid});
             points.push(right);
             sz+=1;

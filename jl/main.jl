@@ -35,4 +35,6 @@ function integrate(func::Function, ticks::Array{Float64,1}, eps::Float64)::Float
     sum(areas)
 end
 
-println(integrate(x->sin(x^2), [0.0, 1.0, 2.0, sqrt(8*pi)], 1e-10))
+#for i in 1:100
+@time for i in 1:100;  println(integrate(x->sin(x^2), [0.0, 1.0, 2.0, sqrt(8*pi)], 1e-10)); end
+#end
