@@ -27,22 +27,24 @@ T Integrate(F f, T eps, const std::vector<T>& init_ticks) {
                  [&f](const T& x) {
                    return Point<T>{x, f(x)};
                  });
-  auto right = points.back();
+  Point<T> right;
   for (size_t sz = points.size(); sz > 1;) {
-    auto& left = points[sz - 2];
+    right=points.back();
+    points.pop_back();
+    auto& left = points.back();
     T mid = (left.x + right.x) * kHalf, fmid = f(mid);
     if (std::abs(left.f + right.f - kTwo * fmid) <= eps) {
       areas.push_back((left.f + right.f + fmid * kTwo) * (right.x - left.x) * kQuarter);
-      points.pop_back();
-      right = left;
+      //points.pop_back();
+      //right = left;
       --sz;
     } else {
-      points.back() = Point<T>{mid, fmid};
+      points.push_back(Point<T>{mid, fmid});
       points.push_back(right);
       ++sz;
     }
   }
-  std::sort(areas.begin(), areas.end(), [](auto x, auto y){return std::abs(x)<std::abs(y);});
+  std::stable_sort(areas.begin(), areas.end(), [](auto x, auto y){return std::abs(x)<std::abs(y);});
   //std::sort(areas.begin(), areas.end());
   return std::accumulate(areas.begin(), areas.end(), static_cast<T>(0));
 }

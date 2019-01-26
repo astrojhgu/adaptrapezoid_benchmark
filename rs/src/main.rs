@@ -44,6 +44,7 @@ where T: Float + Debug,
         }
     }
     (&mut areas).sort_by(|a, b| {
+    //(&mut areas).sort_unstable_by(|a, b| {
         if a.abs() < b.abs() {
             std::cmp::Ordering::Less
         } else if a.abs() > b.abs() {
