@@ -6,6 +6,7 @@
 #include <numeric>
 #include <utility>
 #include <vector>
+#include <stack>
  
 template <typename T>
 struct Point {
@@ -15,36 +16,35 @@ struct Point {
 template <typename T, typename F>
 T Integrate(F f, T eps, const std::vector<T>& init_ticks) {
   if (init_ticks.size() <= 1) {
-    return static_cast<T>(0);
+    return T{};
   }
-  constexpr T kHalf = static_cast<T>(0.5), kQuarter = static_cast<T>(0.25);
-  constexpr T kTwo = static_cast<T>(2), kFour = static_cast<T>(4);
+  constexpr T kHalf = T{0.5}, kQuarter = T{0.25};
+  constexpr T kTwo = T{2}, kFour = T{4};
   eps = eps * kFour / (init_ticks.back() - init_ticks.front());
-  std::vector<T> areas;
+
+  T result{};
   std::vector<Point<T>> points;
-  points.reserve(init_ticks.size());
-  std::transform(init_ticks.begin(), init_ticks.end(), std::back_inserter(points),
-                 [&f](const T& x) {
-                   return Point<T>{x, f(x)};
-                 });
-  auto right = points.back();
-  for (size_t sz = points.size(); sz > 1;) {
-    auto& left = points[sz - 2];
+  std::transform(begin(init_ticks), end(init_ticks), std::back_inserter(points),
+                 [&f](T x) { return Point<T>{x, f(x)}; });
+
+  std::stack<Point<T>, std::vector<Point<T>>> ss(std::move(points));
+
+  auto right = ss.top();
+  ss.pop();
+
+  while (!ss.empty()) {
+    auto const& left = ss.top(); 
+    
     T mid = (left.x + right.x) * kHalf, fmid = f(mid);
     if (std::abs(left.f + right.f - kTwo * fmid) <= eps) {
-      areas.push_back((left.f + right.f + fmid * kTwo) * (right.x - left.x) * kQuarter);
-      points.pop_back();
+      result += (left.f + right.f + fmid * kTwo) * (right.x - left.x) * kQuarter;
       right = left;
-      --sz;
+      ss.pop();
     } else {
-      points.back() = Point<T>{mid, fmid};
-      points.push_back(right);
-      ++sz;
+      ss.push(Point<T>{mid, fmid});
     }
   }
-  std::sort(areas.begin(), areas.end(), [](auto x, auto y){return std::abs(x)<std::abs(y);});
-  //std::sort(areas.begin(), areas.end());
-  return std::accumulate(areas.begin(), areas.end(), static_cast<T>(0));
+  return result;
 }
  
 double foo(double x) { return std::sin(x * x); }
