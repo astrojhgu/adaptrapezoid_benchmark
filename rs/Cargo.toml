@@ -1,13 +1,13 @@
+[[bench]]
+harness = false
+name = 'bench'
+
 [dependencies]
+criterion = '0.2.9'
 num-traits = '0.2.6'
-criterion = "0.2.9"
 
 [dev-dependencies]
-criterion = "0.2.9"
-
-[[bench]]
-name = "bench"
-harness = false
+criterion = '0.2.9'
 
 [package]
 authors = ['Gu Junhua <jhgu@nao.cas.cn>']
