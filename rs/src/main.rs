@@ -1,6 +1,12 @@
+#![feature(test)]
+
+extern crate test;
 use std::fmt::Debug;
+use test::Bencher;
+
 use num_traits::float::Float;
 use num_traits::float::FloatConst;
+
 
 #[derive(Clone, Copy)]
 struct Point<T>{
@@ -55,6 +61,7 @@ where T: Float + Debug,
     areas.into_iter().fold(T::zero(), |a, b| a + b)
 }
 
+
 fn main(){
     /*
     for _i in 0..100 {
@@ -80,4 +87,16 @@ fn main(){
         );
     }
 
+}
+
+
+#[bench]
+fn run(b:&mut Bencher){
+    b.iter(||{
+        integrate(
+            &|x: f64| x.powi(2).sin(),
+            1e-10,
+            &[0.0, 1.0, 2.0, (8.0*f64::PI()).sqrt()]
+        )
+    })
 }
