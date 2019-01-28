@@ -10,8 +10,11 @@ use num_traits::float::FloatConst;
 
 
 fn run(c:&mut Criterion){
-    c.bench_function("with sorting", |b|{
+    let mut cnt=0;
+    c.bench_function("with sorting", move|b|{
         b.iter(||{
+            cnt+=1;
+            println!("{}", cnt);
             integrate(
                 &|x: f64| x.powi(2).sin(),
                 1e-10,
@@ -22,8 +25,10 @@ fn run(c:&mut Criterion){
 }
 
 fn run_nosort(c:&mut Criterion){
-    c.bench_function("no sorting", |b|{
+    let mut cnt=0;
+    c.bench_function("no sorting", move|b|{
         b.iter(||{
+            cnt+=1;
             integrate_nosort(
                 &|x: f64| x.powi(2).sin(),
                 1e-10,
