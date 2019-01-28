@@ -5,5 +5,5 @@ num-traits = '0.2.6'
 [package]
 authors = ['Gu Junhua <jhgu@nao.cas.cn>']
 edition = '2018'
-name = 'rs'
+name = 'adaptrapezoid'
 version = '0.1.0'
