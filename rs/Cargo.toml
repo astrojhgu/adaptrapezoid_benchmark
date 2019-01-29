@@ -1,8 +1,16 @@
-[package]
-name = "rs"
-version = "0.1.0"
-authors = ["Gu Junhua <jhgu@nao.cas.cn>"]
-edition = "2018"
+[[bench]]
+harness = false
+name = 'bench'
 
 [dependencies]
+criterion = '0.2.9'
 num-traits = '0.2.6'
+
+[dev-dependencies]
+criterion = '0.2.9'
+
+[package]
+authors = ['Gu Junhua <jhgu@nao.cas.cn>']
+edition = '2018'
+name = 'adaptrapezoid'
+version = '0.1.0'

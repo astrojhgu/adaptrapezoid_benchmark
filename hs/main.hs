@@ -1,7 +1,7 @@
 module Main where
     import Data.List
 
-    data Point a=Point a a deriving Show -- a1 f1 a2 f2 subsum 
+    data Point a=Point a a deriving Show -- x f
 
     midpoint::(Fractional a)=>(a->a)->(Point a)->(Point a)->(Point a)
     midpoint func (Point x1 f1) (Point x2 f2)=Point xm fm

@@ -1,18 +1,20 @@
 #!/usr/bin/env julia
+using Pkg
+Pkg.add("BenchmarkTools")
+using BenchmarkTools
 
 struct Point
-    x::Float64
-    f::Float64
-    Point(x::Float64, f::Float64)=new(x, f)
+    x
+    f
 end
 
-function integrate(func::Function, ticks::Array{Float64,1}, eps::Float64)::Float64
+function integrate(func, ticks, eps) 
     if length(ticks)<2
         return 0.0
     end
-    points::Array{Point, 1}=[Point(x, func(x)) for x in ticks]
+    points=[Point(x, func(x)) for x in ticks]
     full_width=last(ticks)-first(ticks)
-    areas::Array{Float64,1}=[]
+    areas=[]
     right=last(points)
     sz=length(points)
     while sz>1 
@@ -20,7 +22,8 @@ function integrate(func::Function, ticks::Array{Float64,1}, eps::Float64)::Float
         mid=(left.x+right.x)/2.0
         fmid=func(mid)
         if abs(left.f+right.f-fmid*2.0)<=eps
-            push!(areas, (left.f+right.f+fmid*2.0)*(right.x-left.x)/4.0)
+            area=((left.f+right.f+fmid*2.0)*(right.x-left.x)/4.0)
+            push!(areas, area)
             pop!(points)
             right=left
             sz-=1
@@ -31,8 +34,10 @@ function integrate(func::Function, ticks::Array{Float64,1}, eps::Float64)::Float
             sz+=1
         end
     end
-    areas=sort!(areas, by=x->abs(x))
+    sort!(areas, by=abs)
     sum(areas)
 end
 
-println(integrate(x->sin(x^2), [0.0, 1.0, 2.0, sqrt(8*pi)], 1e-10))
+b=@benchmarkable integrate(x->sin(x^2), [0.0, 1.0, 2.0, sqrt(8*pi)], 1e-10)
+tune!(b)
+println(run(b))

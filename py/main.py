@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import math
 def integrate_iter(func, eps, points):
     areas=[]
     if len(points)<2:
@@ -31,5 +31,5 @@ def integrate(func, ticks, eps):
 
 
 for i in range(0,100):
-    #print(integrate(lambda x:math.sin(x**2), [0.0,1.0, 2.0, math.sqrt(8*math.pi)],1e-10))
-    print(integrate(lambda x: x ** 2, [0.0, 1.0], 1e-10))
+    print(integrate(lambda x:math.sin(x**2), [0.0,1.0, 2.0, math.sqrt(8*math.pi)],1e-10))
+    #print(integrate(lambda x: x ** 2, [0.0, 1.0], 1e-10))
