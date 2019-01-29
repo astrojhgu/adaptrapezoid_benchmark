@@ -7,83 +7,88 @@
 #include <numeric>
 #include <utility>
 #include <vector>
-
-template <typename T>
-struct Point {
-  T x, f;
-};
+#include <stack>
  
 template <typename T, typename F>
-T integrate(F f, T eps, const std::vector<T>& init_ticks) {
-  if (init_ticks.size() <= 1) {
-    return static_cast<T>(0);
+T integrate(F f, T eps,  std::vector<T> init) {
+  if (init.size() <= 1) {
+    return T{};
   }
-  constexpr T kHalf = static_cast<T>(0.5), kQuarter = static_cast<T>(0.25);
-  constexpr T kTwo = static_cast<T>(2), kFour = static_cast<T>(4);
-  eps = eps * kFour / (init_ticks.back() - init_ticks.front());
+  constexpr T kHalf = T{0.5}, kQuarter = T{0.25};
+  constexpr T kTwo = T{2}, kFour = T{4};
+  eps = eps * kFour / (init.back() - init.front());
+
   std::vector<T> areas;
-  std::vector<Point<T>> points;
-  points.reserve(init_ticks.size());
-  std::transform(init_ticks.begin(), init_ticks.end(), std::back_inserter(points),
-                 [&f](const T& x) {
-                   return Point<T>{x, f(x)};
-                 });
-  Point<T> right;
-  for (size_t sz = points.size(); sz > 1;) {
-    right=points.back();
-    points.pop_back();
-    auto& left = points.back();
-    T mid = (left.x + right.x) * kHalf, fmid = f(mid);
-    if (std::abs(left.f + right.f - kTwo * fmid) <= eps) {
-      areas.push_back((left.f + right.f + fmid * kTwo) * (right.x - left.x) * kQuarter);
-      //points.pop_back();
-      //right = left;
-      --sz;
-    } else {
-      points.push_back(Point<T>{mid, fmid});
-      points.push_back(right);
-      ++sz;
+
+  std::stack<T> ss;
+
+  auto right = init.back();
+  auto right_f = f(right);
+  init.pop_back();
+
+  while (!init.empty()) {
+    ss.push(f(init.back()));
+
+    while (!ss.empty()) {
+      auto left = init.back();
+      auto left_f = ss.top(); 
+      
+      T mid = (left + right) * kHalf, fmid = f(mid);
+      if (std::abs(left_f + right_f - kTwo * fmid) <= eps) {
+        areas.push_back((left_f + right_f + fmid * kTwo) * (right - left) * kQuarter);
+        right = left; right_f = left_f;
+        ss.pop();
+        init.pop_back();
+      } else {
+        init.push_back(mid);
+        ss.push(fmid);
+      }
     }
   }
+  
   std::stable_sort(areas.begin(), areas.end(), [](auto x, auto y){return std::abs(x)<std::abs(y);});
-  //std::sort(areas.begin(), areas.end());
+
   return std::accumulate(areas.begin(), areas.end(), static_cast<T>(0));
 }
 
 
 template <typename T, typename F>
-T integrate_nosort(F f, T eps, const std::vector<T>& init_ticks) {
-  if (init_ticks.size() <= 1) {
-    return static_cast<T>(0);
+T integrate_nosort(F f, T eps, std::vector<T> init) {
+   if (init.size() <= 1) {
+    return T{};
   }
-  constexpr T kHalf = static_cast<T>(0.5), kQuarter = static_cast<T>(0.25);
-  constexpr T kTwo = static_cast<T>(2), kFour = static_cast<T>(4);
-  eps = eps * kFour / (init_ticks.back() - init_ticks.front());
-  T area{};
-  std::vector<Point<T>> points;
-  points.reserve(init_ticks.size());
-  std::transform(init_ticks.begin(), init_ticks.end(), std::back_inserter(points),
-                 [&f](const T& x) {
-                   return Point<T>{x, f(x)};
-                 });
-  Point<T> right;
-  for (size_t sz = points.size(); sz > 1;) {
-    right=points.back();
-    points.pop_back();
-    auto& left = points.back();
-    T mid = (left.x + right.x) * kHalf, fmid = f(mid);
-    if (std::abs(left.f + right.f - kTwo * fmid) <= eps) {
-      area+=((left.f + right.f + fmid * kTwo) * (right.x - left.x) * kQuarter);
-      //points.pop_back();
-      //right = left;
-      --sz;
-    } else {
-      points.push_back(Point<T>{mid, fmid});
-      points.push_back(right);
-      ++sz;
+  constexpr T kHalf = T{0.5}, kQuarter = T{0.25};
+  constexpr T kTwo = T{2}, kFour = T{4};
+  eps = eps * kFour / (init.back() - init.front());
+
+  T result{};
+
+  std::stack<T> ss;
+
+  auto right = init.back();
+  auto right_f = f(right);
+  init.pop_back();
+
+  while (!init.empty()) {
+    ss.push(f(init.back()));
+
+    while (!ss.empty()) {
+      auto left = init.back();
+      auto left_f = ss.top(); 
+      
+      T mid = (left + right) * kHalf, fmid = f(mid);
+      if (std::abs(left_f + right_f - kTwo * fmid) <= eps) {
+        result += (left_f + right_f + fmid * kTwo) * (right - left) * kQuarter;
+        right = left; right_f = left_f;
+        ss.pop();
+        init.pop_back();
+      } else {
+        init.push_back(mid);
+        ss.push(fmid);
+      }
     }
   }
-  return area;
+  return result;
 }
 
 
