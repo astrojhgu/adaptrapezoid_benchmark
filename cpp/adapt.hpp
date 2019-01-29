@@ -10,27 +10,27 @@
 #include <stack>
  
 template <typename T, typename F>
-T integrate(F f, T eps,  std::vector<T> init) {
-  if (init.size() <= 1) {
+T integrate(F f, T eps,  std::vector<T> ticks) {
+  if (ticks.size() <= 1) {
     return T{};
   }
   constexpr T kHalf = T{0.5}, kQuarter = T{0.25};
   constexpr T kTwo = T{2}, kFour = T{4};
-  eps = eps * kFour / (init.back() - init.front());
+  eps = eps * kFour / (ticks.back() - ticks.front());
 
   std::vector<T> areas;
 
   std::stack<T> ss;
 
-  auto right = init.back();
+  auto right = ticks.back();
   auto right_f = f(right);
-  init.pop_back();
+  ticks.pop_back();
 
-  while (!init.empty()) {
-    ss.push(f(init.back()));
+  while (!ticks.empty()) {
+    ss.push(f(ticks.back()));
 
     while (!ss.empty()) {
-      auto left = init.back();
+      auto left = ticks.back();
       auto left_f = ss.top(); 
       
       T mid = (left + right) * kHalf, fmid = f(mid);
@@ -38,9 +38,9 @@ T integrate(F f, T eps,  std::vector<T> init) {
         areas.push_back((left_f + right_f + fmid * kTwo) * (right - left) * kQuarter);
         right = left; right_f = left_f;
         ss.pop();
-        init.pop_back();
+        ticks.pop_back();
       } else {
-        init.push_back(mid);
+        ticks.push_back(mid);
         ss.push(fmid);
       }
     }
@@ -53,27 +53,27 @@ T integrate(F f, T eps,  std::vector<T> init) {
 
 
 template <typename T, typename F>
-T integrate_nosort(F f, T eps, std::vector<T> init) {
-   if (init.size() <= 1) {
+T integrate_nosort(F f, T eps, std::vector<T> ticks) {
+   if (ticks.size() <= 1) {
     return T{};
   }
   constexpr T kHalf = T{0.5}, kQuarter = T{0.25};
   constexpr T kTwo = T{2}, kFour = T{4};
-  eps = eps * kFour / (init.back() - init.front());
+  eps = eps * kFour / (ticks.back() - ticks.front());
 
   T result{};
 
   std::stack<T> ss;
 
-  auto right = init.back();
+  auto right = ticks.back();
   auto right_f = f(right);
-  init.pop_back();
+  ticks.pop_back();
 
-  while (!init.empty()) {
-    ss.push(f(init.back()));
+  while (!ticks.empty()) {
+    ss.push(f(ticks.back()));
 
     while (!ss.empty()) {
-      auto left = init.back();
+      auto left = ticks.back();
       auto left_f = ss.top(); 
       
       T mid = (left + right) * kHalf, fmid = f(mid);
@@ -81,9 +81,9 @@ T integrate_nosort(F f, T eps, std::vector<T> init) {
         result += (left_f + right_f + fmid * kTwo) * (right - left) * kQuarter;
         right = left; right_f = left_f;
         ss.pop();
-        init.pop_back();
+        ticks.pop_back();
       } else {
-        init.push_back(mid);
+        ticks.push_back(mid);
         ss.push(fmid);
       }
     }
