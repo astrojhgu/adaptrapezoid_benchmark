@@ -39,4 +39,9 @@ void run_nosort (benchmark::State &state)
 
 BENCHMARK (run);
 BENCHMARK (run_nosort);
-BENCHMARK_MAIN ();
+
+int main (int argc, char* argv[]) {
+    benchmark::Initialize (& argc, argv);
+    benchmark::RunSpecifiedBenchmarks ();
+    return 0;
+}
