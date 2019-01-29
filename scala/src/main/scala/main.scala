@@ -1,3 +1,5 @@
+import org.scalameter.api._
+
 import spire.math.Fractional;
 import spire.syntax.fractional._
 import scala.annotation.tailrec
@@ -79,6 +81,35 @@ object Main {
       val xx = Integrate.perform_iter[Double](x => sin(x * x), List(0.0, 1.0, 2.0, sqrt(8.0 * scala.math.Pi)), 1e-10);
       //val xx = Integrate.perform_rec[Double](x => (x * x), List(0.0, 1.0), 1e-10);
       System.out.println(xx);
+    }
+  }
+}
+
+
+object MyBench
+  extends Bench.LocalTime {
+
+  //val sizes = Gen.range("size")(0, 0, 1)
+  val funcs= Gen.unit("Integrating")
+
+  // multiple tests can be specified here
+  performance of "Integrate_iter" in {
+    using (funcs) in {
+      Unit=>{
+        val xx = Integrate.perform_iter[Double](x => sin(x * x), List(0.0, 1.0, 2.0, sqrt(8.0 * scala.math.Pi)), 1e-10);
+        //val xx = Integrate.perform_rec[Double](x => (x * x), List(0.0, 1.0), 1e-10);
+        System.out.println(xx);
+      }
+    }
+  }
+
+  performance of "Integrate_rec" in {
+    using (funcs) in {
+      Unit=>{
+        val xx = Integrate.perform_rec[Double](x => sin(x * x), List(0.0, 1.0, 2.0, sqrt(8.0 * scala.math.Pi)), 1e-10);
+        //val xx = Integrate.perform_rec[Double](x => (x * x), List(0.0, 1.0), 1e-10);
+        System.out.println(xx);
+      }
     }
   }
 }
