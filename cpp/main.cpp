@@ -30,5 +30,4 @@ void run_nosort(benchmark::State& state) {
 
 BENCHMARK(run);
 BENCHMARK(run_nosort);
-BENCHMARK(run_more);
 BENCHMARK_MAIN();
