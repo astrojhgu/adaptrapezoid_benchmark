@@ -30,6 +30,12 @@ def integrate(func, ticks, eps):
     return integrate_iter(func, eps1, points)
 
 
-for i in range(0,100):
-    print(integrate(lambda x:math.sin(x**2), [0.0,1.0, 2.0, math.sqrt(8*math.pi)],1e-10))
+#for i in range(0,100):
+#    print(integrate(lambda x:math.sin(x**2), [0.0,1.0, 2.0, math.sqrt(8*math.pi)],1e-10))
     #print(integrate(lambda x: x ** 2, [0.0, 1.0], 1e-10))
+import timeit
+
+n=10
+timer=timeit.Timer('integrate(lambda x:math.sin(x**2), [0.0,1.0, 2.0, math.sqrt(8*math.pi)],1e-10)', globals={'integrate':integrate, 'math':math})
+dt=timer.timeit(n)
+print("dt={0} ms".format(dt/n*1000))
