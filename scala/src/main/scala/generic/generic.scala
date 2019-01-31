@@ -1,3 +1,5 @@
+package generic;
+
 import org.scalameter.api._
 
 import spire.math.Fractional;
