@@ -2,7 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
-namespace ConsoleApplication1  
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Running;
+
+
+namespace adapt  
 {  
     struct Point{
         public double x;
@@ -51,20 +55,23 @@ namespace ConsoleApplication1
         }
     }
 
+    public class BenchIntegration{
+        private readonly System.Collections.Generic.List<double> ticks;
+        public BenchIntegration(){
+            ticks=new System.Collections.Generic.List<double>(){0.0, 1.0, Math.Sqrt(Math.PI*8.0)};
+        }
 
+        [Benchmark]
+        public void run(){
+            Integration.integrate(delegate(double x){return Math.Sin(x*x);}, ticks, 1e-10);
+        }
+    }
     
     class Program  
     {  
         static void Main(string[] args)  
         {  
-            var ticks=new System.Collections.Generic.List<double>(){0.0, 1.0, Math.Sqrt(Math.PI*8.0)};
-
-            for(int i=0;i<100;++i)
-            {
-                var y=Integration.integrate(delegate(double x){return Math.Sin(x*x);}, ticks, 1e-10);
-                Console.WriteLine(y);
-
-            }
+            var summary=BenchmarkRunner.Run<BenchIntegration>();
         }
     }  
 }
