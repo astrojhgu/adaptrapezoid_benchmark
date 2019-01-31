@@ -13,8 +13,6 @@ class Point[T:Fractional](val x: T, val f: T) {
 }
 
 object Integrate {
-  final def integrate[T:Fractional:Ordering](func:T=>T, eps:T, init_ticks:Seq[T]){}
-
   final def midpoint[T:Fractional](func:T=>T, p1:Point[T], p2:Point[T]):Point[T]={
     val xm=(p1.x+p2.x)/2;
     new Point[T](xm, func(xm))

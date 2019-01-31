@@ -11,8 +11,6 @@ class Point(val x: Double, val f: Double) {
 }
 
 object Integrate {
-  final def integrate(func:Double=>Double, eps:Double, init_ticks:Seq[Double]){}
-
   final def midpoint(func:Double=>Double, p1:Point, p2:Point):Point={
     val xm=(p1.x+p2.x)/2;
     new Point(xm, func(xm))

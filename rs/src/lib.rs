@@ -25,9 +25,8 @@ pub fn integrate<T>(func: &dyn Fn(T) -> T, eps: T, init_ticks: &[T]) -> T
     let mut points:Vec<_>=init_ticks.iter().map(|&x|Point::<T>{x, f:func(x)}).collect();
     //let mut right=*points.last().unwrap();
     let mut right;
-    let mut sz=points.len();
     let eps=eps*four/full_width;
-    while sz>1 {
+    while points.len()>1 {
         right=points.pop().unwrap();
         let left=*points.last().unwrap();
         let mid=(left.x+right.x)*half;
@@ -36,13 +35,12 @@ pub fn integrate<T>(func: &dyn Fn(T) -> T, eps: T, init_ticks: &[T]) -> T
             areas.push((left.f+right.f+fmid*two)*(right.x-left.x)*quarter);
             //points.pop();
             //right=left;
-            sz-=1;
+
         }
             else{
                 //points.pop();
                 points.push(Point::<T>{x:mid, f:fmid});
                 points.push(right);
-                sz+=1;
             }
     }
     (&mut areas).sort_by(|a, b| {
@@ -72,9 +70,9 @@ pub fn integrate_nosort<T>(func: &dyn Fn(T) -> T, eps: T, init_ticks: &[T]) -> T
     let mut points:Vec<_>=init_ticks.iter().map(|&x|Point::<T>{x, f:func(x)}).collect();
     //let mut right=*points.last().unwrap();
     let mut right;
-    let mut sz=points.len();
+
     let eps=eps*four/full_width;
-    while sz>1 {
+    while points.len()>1 {
         right=points.pop().unwrap();
         let left=*points.last().unwrap();
         let mid=(left.x+right.x)*half;
@@ -83,13 +81,11 @@ pub fn integrate_nosort<T>(func: &dyn Fn(T) -> T, eps: T, init_ticks: &[T]) -> T
             area=area+(left.f+right.f+fmid*two)*(right.x-left.x)*quarter;
             //points.pop();
             //right=left;
-            sz-=1;
         }
             else{
                 //points.pop();
                 points.push(Point::<T>{x:mid, f:fmid});
                 points.push(right);
-                sz+=1;
             }
     }
     area
