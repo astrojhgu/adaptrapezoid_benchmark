@@ -1,4 +1,5 @@
-module Main where
+module Lib (integrate)
+    where
     import Data.List
 
     data Point a=Point a a deriving Show -- x f
@@ -27,11 +28,3 @@ module Main where
                 eps1=eps*(fromInteger 4)/((last ticks)-(head ticks))
                 areas=snd $ integrate_iter func eps1 points []
                 sorted_areas=sortBy (\a b->compare (abs a) (abs b)) areas
-
-    -- test function to be integrated
-    foo x= sin (x*x)
-    
-
-    main :: IO ()
-    main = print $ integrate foo [0.0, 1.0, 2.0, sqrt (8*pi)] 1e-10
-    
