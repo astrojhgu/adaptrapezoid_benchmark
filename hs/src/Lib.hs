@@ -1,4 +1,4 @@
-module Lib (integrate)
+module Lib (integrate, integrate_nosort)
     where
     import Data.List
 
@@ -28,3 +28,19 @@ module Lib (integrate)
                 eps1=eps*(fromInteger 4)/((last ticks)-(head ticks))
                 areas=snd $ integrate_iter func eps1 points []
                 sorted_areas=sortBy (\a b->compare (abs a) (abs b)) areas
+
+    integrate_iter_nosort::(Fractional a, Ord a)=>(a->a)->a->[Point a]->a->([Point a], a)
+    integrate_iter_nosort func eps (left@(Point x1 f1):right@(Point x2 f2):others) old_area
+                | abs (f1+f2-fm*(fromInteger 2)) <= eps = integrate_iter_nosort func eps (right:others) ((area left right)+old_area)
+                | otherwise = integrate_iter_nosort func eps (left:(Point xm fm):right:others) old_area
+                where (Point xm fm)=midpoint func left right
+    integrate_iter_nosort _ _ points old_area = (points, old_area)
+        
+    integrate_nosort::(Fractional a, Ord a)=>(a->a)->[a]->a->a
+    integrate_nosort func ticks eps=sum_area
+            where 
+                points=fmap (\x->Point x $ func x) ticks
+                eps1=eps*(fromInteger 4)/((last ticks)-(head ticks))
+                sum_area=snd $ integrate_iter_nosort func eps1 points $ fromInteger 0
+                
+            
