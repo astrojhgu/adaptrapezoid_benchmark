@@ -126,18 +126,7 @@ int comp (const void *_x1, const void *_x2)
 {
     double x1 = fabs (*(double *)_x1);
     double x2 = fabs (*(double *)_x2);
-    if (x1 > x2)
-        {
-            return 1;
-        }
-    else if (x1 < x2)
-        {
-            return -1;
-        }
-    else
-        {
-            return 0;
-        }
+    return x1==x2?0:(x1>x2)?1:-1;
 }
 
 double integrate (double (*func) (double), double *init_ticks, int nticks, double eps1)
