@@ -1,7 +1,7 @@
 # A benchmark of different languages that are potentially suitable to scientific computing with the adaptive trapezoid integration algorithm.
 
 Currently implemented languages:
-Rust, C++, Scala, Haskell, Python, C#
+Rust, C++, Scala, Haskell, Python, C#, C
 
 # Directories
 1. rs: Rust
@@ -10,6 +10,7 @@ Rust, C++, Scala, Haskell, Python, C#
 4. py: Python
 5. scala: Scala
 6. cs: C#
+7. c: C
 
 # Description to the algorithm
 The adaptive trapezoid quadrature method (i.e., the definite integration) works by dividing the integration interval iteratively (or in other words, recursively) and approximate the result by the summing areas of trapezoids of all the intervals.
