@@ -27,7 +27,14 @@ typedef struct _PointStack
 
 void extend_stack (PointStack *ps, int new_cap)
 {
-    ps->mem = (Point *)realloc (ps->mem, new_cap * sizeof (Point));
+    if (ps->mem)
+        {
+            ps->mem = (Point *)realloc (ps->mem, new_cap * sizeof (Point));
+        }
+    else
+        {
+            ps->mem = (Point *)malloc (new_cap * sizeof (Point));
+        }
     assert (ps->mem != 0);
     ps->cap = new_cap;
     // printf("extended\n");
@@ -91,7 +98,14 @@ void finalize_double_vec (DoubleVec *dv)
 
 void extend_double_vec (DoubleVec *dv, int new_cap)
 {
-    dv->mem = (double *)realloc (dv->mem, new_cap * sizeof (double));
+    if (dv->mem)
+        {
+            dv->mem = (double *)realloc (dv->mem, new_cap * sizeof (double));
+        }
+    else
+        {
+            dv->mem = (double *)malloc (new_cap * sizeof (double));
+        }
     assert (dv->mem != 0);
     dv->cap = new_cap;
     // printf("extended to %d\n", new_cap);
