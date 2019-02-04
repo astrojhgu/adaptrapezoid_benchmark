@@ -12,6 +12,11 @@ Rust, C++, Scala, Haskell, Python, C#, C
 6. cs: C#
 7. c: C
 
+# Benchmark results
+The algorithm is imlemented in two ways:
+1. After computing the sub-results of each interval, sort them before summing up: [Result_sort.md](Result_sort.md)
+2. Directly sum up the results of each interval without sorting: [Result_nosort.md](Result_nosort.md)
+
 # Description to the algorithm
 The adaptive trapezoid quadrature method (i.e., the definite integration) works by dividing the integration interval iteratively (or in other words, recursively) and approximate the result by the summing areas of trapezoids of all the intervals.
 
@@ -27,3 +32,5 @@ The definition of ```I(F, x_1, x_2)``` is
 2. If ```diff<eps/W*(x_2-x_1)```, go to 3, otherwise go to 4 where ```W``` is the width of the whole initial integration interval.
 3. return ```T(F, x_1, (x_1+x_2)/2)+T(F, (x_1+x_2)/2, x_2)```.
 4. return ```I(F, x_1, (x_1+x_2)/2)+I(F, (x_1+x_2)/2, x_2)```.
+
+When summing up the sub-results of each interval, sorting the sub-results by their ```abs``` are optionally performed in order to suppress the floating number truncation effect during adding a small number to a large one.
