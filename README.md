@@ -14,8 +14,10 @@ Rust, C++, Scala, Haskell, Python, C#, C
 
 # Benchmark results
 The algorithm is imlemented in two ways:
-1. After computing the sub-results of each interval, sort them before summing up: [Result_sort.md](Result_sort.md)
-2. Directly sum up the results of each interval without sorting: [Result_nosort.md](Result_nosort.md)
+1. After computing the sub-results of each interval, sort them before summing up: [Result_sort.md](Result_sort.md).
+2. Directly sum up the results of each interval without sorting: [Result_nosort.md](Result_nosort.md).
+
+Behcnmark methods for each language are listed in [Benchcmd.md](Benchcmd.md).
 
 # Description to the algorithm
 The adaptive trapezoid quadrature method (i.e., the definite integration) works by dividing the integration interval iteratively (or in other words, recursively) and approximate the result by the summing areas of trapezoids of all the intervals.
