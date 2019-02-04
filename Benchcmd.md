@@ -9,7 +9,7 @@ time ./main
 ```
 
 ## C++
-I use google benchmark lib to perform the bench
+I use (google benchmark)[https://github.com/google/benchmark] lib to perform the bench
 ```
 cd cpp
 make clean && make
