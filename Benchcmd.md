@@ -17,20 +17,20 @@ make clean && make
 ```
 
 ## Rust
-I use the Rust crate ```criterion``` to benchmark the program.
+I use the Rust crate [criterion](https://crates.io/crates/criterion) to benchmark the program.
 ```
 cd rust
 cargo bench
 ```
 
 ## Haskell
-I use ```criterion``` to benchmark the program.
+I use [criterion](https://hackage.haskell.org/package/criterion) to benchmark the program.
 ```
 cd hs
 stack exec hs-exe
 ```
 ## CPython, pypy, and jython
-I use ```timeit``` to time the running time
+I use [timeit](https://docs.python.org/3.7/library/timeit.html) to time the running time
 ```
 cd py
 python main.py
@@ -38,20 +38,20 @@ pypy main.py
 jython main.py
 ```
 ## Julia
-I use ```BenchmarkTools``` to perform the benchmark
+I use [BenchmarkTools](https://github.com/JuliaCI/BenchmarkTools.jl) to perform the benchmark
 ```
 julia generic.jl
 julia with_type_annotation.jl
 julia no_type_annotation.jl
 ```
 ## C#
-I use ```BenchmarkDotNet``` to perform the benchmark
+I use [BenchmarkDotNet](https://benchmarkdotnet.org/articles/overview.html) to perform the benchmark
 ```
 cd cs
 dotnet run -c Release
 ```
 ## Scala
-I use ```scalameter``` to perform the benchmark
+I use [scalameter](https://scalameter.github.io/) to perform the benchmark
 ```
 cd scala
 sbt run
