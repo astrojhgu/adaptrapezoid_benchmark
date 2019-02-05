@@ -5,7 +5,7 @@ module Lib (integrate, integrate_nosort)
     data Point a=Point a a deriving Show -- x f
 
     midpoint::(Fractional a)=>(a->a)->(Point a)->(Point a)->(Point a)
-    midpoint func (Point x1 f1) (Point x2 f2)=Point xm fm
+    midpoint func (Point x1 _) (Point x2 _)=Point xm fm
         where 
             xm=(x1+x2)/(fromInteger 2)
             fm=func xm
@@ -15,7 +15,7 @@ module Lib (integrate, integrate_nosort)
     
 
     integrate_iter::(Fractional a, Ord a)=>(a->a)->a->[Point a]->[a]->([Point a], [a])
-    integrate_iter func eps (left@(Point x1 f1):right@(Point x2 f2):others) areas
+    integrate_iter func eps (left@(Point _ f1):right@(Point _ f2):others) areas
                 | abs (f1+f2-fm*(fromInteger 2)) <= eps = integrate_iter func eps (right:others) ((area left right):areas)
                 | otherwise = integrate_iter func eps (left:(Point xm fm):right:others) areas
                 where (Point xm fm)=midpoint func left right
@@ -30,7 +30,7 @@ module Lib (integrate, integrate_nosort)
                 sorted_areas=sortBy (\a b->compare (abs a) (abs b)) areas
 
     integrate_iter_nosort::(Fractional a, Ord a)=>(a->a)->a->[Point a]->a->([Point a], a)
-    integrate_iter_nosort func eps (left@(Point x1 f1):right@(Point x2 f2):others) old_area
+    integrate_iter_nosort func eps (left@(Point _ f1):right@(Point _ f2):others) old_area
                 | abs (f1+f2-fm*(fromInteger 2)) <= eps = integrate_iter_nosort func eps (right:others) ((area left right)+old_area)
                 | otherwise = integrate_iter_nosort func eps (left:(Point xm fm):right:others) old_area
                 where (Point xm fm)=midpoint func left right
