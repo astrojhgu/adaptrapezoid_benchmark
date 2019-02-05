@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns #-}
 module Lib (integrate, integrate_nosort)
     where
     import Data.List
@@ -33,7 +34,7 @@ module Lib (integrate, integrate_nosort)
 
     {-# INLINE integrate_iter_nosort #-}
     integrate_iter_nosort::(Fractional a, Ord a)=>(a->a)->a->[Point a]->a->([Point a], a)
-    integrate_iter_nosort func eps (left@(Point _ f1):right@(Point _ f2):others) old_area
+    integrate_iter_nosort func eps (left@(Point _ f1):right@(Point _ f2):others) !old_area
                 | abs (f1+f2-fm*(fromInteger 2)) <= eps = integrate_iter_nosort func eps (right:others) ((area left right)+old_area)
                 | otherwise = integrate_iter_nosort func eps (left:(Point xm fm):right:others) old_area
                 where (Point xm fm)=midpoint func left right
