@@ -2,7 +2,7 @@ module Lib (integrate, integrate_nosort)
     where
     import Data.List
 
-    data Point a=Point a a deriving Show -- x f
+    data Point a=Point !a !a deriving Show -- x f
 
     midpoint::(Fractional a)=>(a->a)->(Point a)->(Point a)->(Point a)
     midpoint func (Point x1 _) (Point x2 _)=Point xm fm
