@@ -36,3 +36,10 @@ The definition of ```I(F, x_1, x_2)``` is
 4. return ```I(F, x_1, (x_1+x_2)/2)+I(F, (x_1+x_2)/2, x_2)```.
 
 When summing up the sub-results of each interval, sorting the sub-results by their ```abs``` are optionally performed in order to suppress the floating number truncation effect during adding a small number to a large one.
+
+# The integrand function and the precise result
+```\int_0^{\sqrt{\pi/8}} \sin(x^2)dx=\sqrt{\pi/4}S(4).```
+The numeric result is 
+0.527038339761566009286263102166809763899326865179511011538
+according to 
+[Mathematica alpha](https://www.wolframalpha.com/input/?i=int%5Bsin(x%5E2),+x%3D0..sqrt%5B8*PI%5D%5D)
