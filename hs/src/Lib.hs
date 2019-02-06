@@ -17,7 +17,7 @@ module Lib (integrate, integrate_nosort)
 
     {-# INLINE integrate_iter #-}
     integrate_iter::(Fractional a, Ord a)=>(a->a)->a->[Point a]->[a]->([Point a], [a])
-    integrate_iter func eps (left@(Point x1 f1):right@(Point x2 f2):others) !areas
+    integrate_iter func eps (left@(Point _ f1):right@(Point _ f2):others) !areas
                 | abs (f1+f2-fm*2) <= eps = integrate_iter func eps (right:others) ((area left right):areas)
                 | otherwise = integrate_iter func eps (left:(Point xm fm):right:others) areas
                 where (Point xm fm)=midpoint func left right
@@ -35,7 +35,7 @@ module Lib (integrate, integrate_nosort)
 
     {-# INLINE integrate_iter_nosort #-}
     integrate_iter_nosort::(Fractional a, Ord a)=>(a->a)->a->[Point a]->a->([Point a], a)
-    integrate_iter_nosort func eps (left@(Point x1 f1):right@(Point x2 f2):others) !old_area
+    integrate_iter_nosort func eps (left@(Point _ f1):right@(Point _ f2):others) !old_area
                 | abs (f1+f2-fm*2) <= eps = integrate_iter_nosort func eps (right:others) ((area left right)+old_area)
                 | otherwise = integrate_iter_nosort func eps (left:(Point xm fm):right:others) old_area
                 where (Point xm fm)=midpoint func left right
