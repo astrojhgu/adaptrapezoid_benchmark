@@ -64,12 +64,25 @@ function integrate_nosort(func, ticks, eps)
 end
 
 
+const TOL=1e-10::Float64
+const PRECISE_RESULT=0.527038339761566009286263102166809763899326865179511011538::Float64
+
+println("Validating result precision:")
+println("integrate:")
+precision=abs(PRECISE_RESULT-integrate(x->sin(x^2), [0.0, 1.0, 2.0, sqrt(8*pi)], TOL));
+println("Precision=", precision)
+println("Required precision=", TOL)
+println("integrate_nosort:")
+precision=abs(PRECISE_RESULT-integrate_nosort(x->sin(x^2), [0.0, 1.0, 2.0, sqrt(8*pi)], TOL));
+println("Precision=", precision)
+println("Required precision=", TOL)
+
 println("Benchmarking integration with sorting sub-interval areas")
-b=@benchmarkable integrate(x->sin(x^2), [0.0, 1.0, 2.0, sqrt(8*pi)], 1e-10)
+b=@benchmarkable integrate(x->sin(x^2), [0.0, 1.0, 2.0, sqrt(8*pi)], TOL)
 tune!(b)
 println(run(b))
 
 println("Benchmarking integration without sort sub-interval areas")
-b=@benchmarkable integrate_nosort(x->sin(x^2), [0.0, 1.0, 2.0, sqrt(8*pi)], 1e-10)
+b=@benchmarkable integrate_nosort(x->sin(x^2), [0.0, 1.0, 2.0, sqrt(8*pi)], TOL)
 tune!(b)
 println(run(b))

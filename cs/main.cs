@@ -56,14 +56,23 @@ namespace adapt
     }
 
     public class BenchIntegration{
+        private const double tol=1e-10;
         private readonly System.Collections.Generic.List<double> ticks;
         public BenchIntegration(){
             ticks=new System.Collections.Generic.List<double>(){0.0, 1.0, Math.Sqrt(Math.PI*8.0)};
+            const double precise_result=0.527038339761566009286263102166809763899326865179511011538;
+            
+            var result=Integration.integrate(delegate(double x){return Math.Sin(x*x);}, ticks, tol);
+            System.Console.WriteLine("Precision validation:");
+            System.Console.Write("diff=");
+            System.Console.WriteLine(Math.Abs(result-precise_result));
+            System.Console.Write("Required precision=");
+            System.Console.WriteLine(tol);
         }
 
         [Benchmark]
         public void run(){
-            Integration.integrate(delegate(double x){return Math.Sin(x*x);}, ticks, 1e-10);
+            Integration.integrate(delegate(double x){return Math.Sin(x*x);}, ticks, tol);
         }
     }
     
