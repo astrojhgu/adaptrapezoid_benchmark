@@ -9,6 +9,20 @@ struct Point<T> {
     f: T,
 }
 
+fn neumaier_sum<T>(x:T, mut sum:T, mut comp:T)->(T, T)
+where T:Float+Debug
+{
+    //https://en.wikipedia.org/wiki/Kahan_summation_algorithm
+    let t=sum+x;
+    if sum.abs()>=x.abs(){
+        comp=comp+((sum-t)+x);
+    }else{
+        comp=comp+((x-t)+sum);
+    }
+    sum=t;
+    (sum, comp)
+}
+
 
 pub fn integrate<T>(func: &dyn Fn(T) -> T, eps: T, init_ticks: &[T]) -> T
 where
@@ -39,10 +53,10 @@ where
         let fmid = func(mid);
         if (left.f + right.f - fmid * two).abs() <= eps {
             let area = (left.f + right.f + fmid * two) * (right.x - left.x) * 
-            quarter - comp;
-            let t = total_area + area;
-            comp = (t-total_area)-area;
-            total_area = t;
+            quarter;
+            let (s, c)=neumaier_sum(area, total_area, comp);
+            total_area=s;
+            comp=c;
         //points.pop();
         //right=left;
         } else {
@@ -51,5 +65,5 @@ where
             points.push(right);
         }
     }
-    total_area
+    total_area+comp
 }

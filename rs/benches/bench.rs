@@ -4,7 +4,6 @@ extern crate criterion;
 use criterion::Criterion;
 
 use adaptrapezoid::integrate;
-use adaptrapezoid::integrate_nosort;
 use num_traits::float::FloatConst;
 
 fn run(c: &mut Criterion) {
