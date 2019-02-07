@@ -17,6 +17,8 @@ RAM: 16 GB
 897.9 ms
 ### CPython
 2786 ms
+### CPython-numba
+223.63 ms
 ### pypy
 803.26 ms
 ### jython

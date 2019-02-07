@@ -17,6 +17,8 @@ N/A ms
 148.9 ms
 ### CPython
 N/A
+### CPython-numba
+131.36 ms
 ### pypy
 N/A
 ### jython
