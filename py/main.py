@@ -14,18 +14,8 @@ result=adapt.integrate(lambda x:math.sin(x**2), [0.0,1.0, 2.0, math.sqrt(8*math.
 diff=abs(PRECISE_RESULT-result)
 print("diff={0}".format(diff))
 print("Required precision={0}".format(TOL))
-result=adapt.integrate_nosort(lambda x:math.sin(x**2), [0.0,1.0, 2.0, math.sqrt(8*math.pi)],TOL);
-diff=abs(PRECISE_RESULT-result)
-print("diff={0}".format(diff))
-print("Required precision={0}".format(TOL))
-
 
 n=10
 timer=timeit.Timer('integrate(lambda x:math.sin(x**2), [0.0,1.0, 2.0, math.sqrt(8*math.pi)],1e-10)', setup="import math; from adapt import integrate;")
-dt=timer.timeit(n)
-print("dt={0} ms".format(dt/n*1000))
-
-n=10
-timer=timeit.Timer('integrate_nosort(lambda x:math.sin(x**2), [0.0,1.0, 2.0, math.sqrt(8*math.pi)],1e-10)', setup="import math; from adapt import integrate_nosort;")
 dt=timer.timeit(n)
 print("dt={0} ms".format(dt/n*1000))
