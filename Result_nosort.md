@@ -16,13 +16,13 @@ N/A ms
 ### Haskell
 148.9 ms
 ### CPython
-N/A
+2243.94
 ### CPython-numba
-131.36 ms
+108.95 ms
 ### pypy
-N/A
+104.89 ms
 ### jython
-N/A
+2164.00 ms
 ### Julia (generic)
 86.984 ms
 ### Julia (with explicit type annotation)
