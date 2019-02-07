@@ -69,7 +69,7 @@ template <typename T, typename F> T integrate(F f, T eps, std::vector<T> ticks)
                         }
                 }
         }
-    return result;
+    return result+comp;
 }
 
 

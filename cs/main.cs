@@ -66,7 +66,7 @@ namespace adapt
                     points.Push(right);
                 }
             }
-            return total_area;
+            return total_area+comp;
         }
     }
 
