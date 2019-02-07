@@ -29,10 +29,11 @@ I use [criterion](https://hackage.haskell.org/package/criterion) to benchmark th
 cd hs
 stack exec hs-exe
 ```
-## CPython, pypy, and jython
+## CPython, CPython-numba, pypy, and jython
 I use [timeit](https://docs.python.org/3.7/library/timeit.html) to time the running time
 ```
 cd py
+python main.py
 python main.py
 pypy main.py
 jython main.py
