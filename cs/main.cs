@@ -26,9 +26,25 @@ namespace adapt
             return new Point(xm, f(xm));
         }
 
+        private static (double, double) neumaier_sum(double x, double sum, double comp)
+        {
+            //https://en.wikipedia.org/wiki/Kahan_summation_algorithm
+            double t=sum+x;
+            if (Math.Abs(sum)>=Math.Abs(x)){
+                comp+=((sum-t)+x);
+            }else{
+                comp+=((x-t)+ sum);
+            }
+            sum=t;
+            return (sum, comp);
+        }
+
+
         public static double integrate(func f,  System.Collections.Generic.IReadOnlyList<double>  init_ticks, double eps1){
             var points=new System.Collections.Generic.Stack<Point>();
-            var areas=new System.Collections.Generic.List<double>();
+            //var areas=new System.Collections.Generic.List<double>();
+            double total_area=0;
+            double comp=0;
             foreach(var x in init_ticks){
                 points.Push(new Point(x, f(x)));
             }
@@ -42,16 +58,15 @@ namespace adapt
                 var left=points.Peek();
                 var mid=Integration.midpoint(ref left, ref right, f);
                 if(Math.Abs(left.f+right.f-mid.f*2.0)<=eps){
-                    areas.Add((left.f+right.f+mid.f*2.0)*(right.x-left.x)/4.0);
+                    //areas.Add((left.f+right.f+mid.f*2.0)*(right.x-left.x)/4.0);
+                    double area=(left.f+right.f+mid.f*2.0)*(right.x-left.x)/4.0;
+                    (total_area, comp)=neumaier_sum(total_area, area, comp);
                 }else{
                     points.Push(mid);
                     points.Push(right);
                 }
             }
-            areas.Sort(delegate(double x, double y){
-                return Math.Abs(x).CompareTo(Math.Abs(y));
-            });
-            return areas.Sum();
+            return total_area;
         }
     }
 
