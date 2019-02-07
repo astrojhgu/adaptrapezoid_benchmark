@@ -19,17 +19,5 @@ fn run(c: &mut Criterion) {
     });
 }
 
-fn run_nosort(c: &mut Criterion) {
-    c.bench_function("no sorting", move |b| {
-        b.iter(|| {
-            integrate_nosort(
-                &|x: f64| x.powi(2).sin(),
-                1e-10,
-                &[0.0, 1.0, 2.0, (8.0 * f64::PI()).sqrt()],
-            )
-        })
-    });
-}
-
-criterion_group!(name=benches; config=Criterion::default().sample_size(30).nresamples(10); targets=run, run_nosort);
+criterion_group!(name=benches; config=Criterion::default().sample_size(30).nresamples(10); targets=run);
 criterion_main!(benches);
