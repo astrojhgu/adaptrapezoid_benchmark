@@ -14,7 +14,7 @@ N/A ms
 ### Rust
 71.815 ms
 ### Haskell
-1568 ms
+148.9 ms
 ### CPython
 N/A
 ### pypy

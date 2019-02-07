@@ -14,7 +14,7 @@ RAM: 16 GB
 ### Rust
 110.70 ms
 ### Haskell
-3158 ms
+897.9 ms
 ### CPython
 2786 ms
 ### pypy
