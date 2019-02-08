@@ -101,22 +101,21 @@ double integrate (double (*func) (double), double *init_ticks, int nticks, doubl
             Point p = { .x = init_ticks[i], .f = func (init_ticks[i]) };
             push (&ps, p);
         }
-    Point right;
+    Point right=pop(&ps);
     double eps = eps1 * 4.0 / full_width;
-    while (stack_size (&ps) > 1)
+    while (stack_size (&ps) > 0)
         {
-            Point right = pop (&ps);
             Point left = top (&ps);
             Point midp = midpoint (func, left, right);
             if (fabs (left.f + right.f - midp.f * 2) <= eps)
                 {
                     double s = (left.f + right.f + midp.f * 2.0) * (right.x - left.x) / 4.0;
                     neumaier_sum(s, &area, &comp);
+                    right=pop(&ps);
                 }
             else
                 {
                     push (&ps, midp);
-                    push (&ps, right);
                 }
         }
     finalize_point_stack (&ps);
