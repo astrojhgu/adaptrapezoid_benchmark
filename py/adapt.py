@@ -15,24 +15,20 @@ def integrate_iter(func, eps, points):
     if len(points) < 2:
         return 0.0
 
-    right = points[-1]
-    sz = len(points)
+    right = points.pop()
 
-    while sz > 1:
-        left = points[-2]
+    while points:
+        left = points[-1]
         xm = 0.5 * (left[0] + right[0])
         fm = func(xm)
         if abs(left[1] + right[1] - 2.0 * fm) <= eps:
             area = (left[1] + right[1] + fm * 2.0) * (right[0] - left[0]) * 0.25
             total_area, comp = neumaier_sum(area, total_area, comp)
 
-            points.pop()
-            right = left
-            sz -= 1
+            right=points.pop()
         else:
-            points[-1] = (xm, fm)
-            points.append(right)
-            sz += 1
+            points.append((xm, fm))
+            
     return total_area+comp
 
 def integrate(func, ticks, eps):

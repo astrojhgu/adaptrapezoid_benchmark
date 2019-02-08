@@ -27,20 +27,17 @@ function integrate(func::Function, ticks::Array{Float64,1}, eps::Float64)::Float
     full_width=last(ticks)-first(ticks)
     total_area=0.0
     comp=0.0
-    right=last(points)
-    while length(points)>1
-        left=points[lastindex(points)-1]
+    right=pop!(points)
+    while length(points)>0
+        left=last(points)
         mid=(left.x+right.x)/2.0
         fmid=func(mid)
         if abs(left.f+right.f-fmid*2.0)<=eps
             area=((left.f+right.f+fmid*2.0)*(right.x-left.x)/4.0)
             (total_area,comp)=neumaier_sum(area, total_area, comp)
-            pop!(points)
-            right=left
+            right=pop!(points)
         else
-            pop!(points)
             push!(points, Point(mid, fmid))
-            push!(points, right)
         end
     end
     total_area+comp

@@ -24,23 +24,18 @@ def integrate_iter(func, eps, points):
     if len(points) < 2:
         return 0.0
 
-    right = points[-1]
-    sz = len(points)
+    right = points.pop()
 
-    while sz > 1:
-        left = points[-2]
+    while points:
+        left = points[-1]
         xm = 0.5 * (left.x + right.x)
         fm = func(xm)
         if abs(left.y + right.y - 2.0 * fm) <= eps:
             area = (left.y + right.y + fm * 2.0) * (right.x - left.x) * 0.25
             total_area, comp=neumaier_sum(area, total_area, comp)
-            points.pop()
-            right = left
-            sz -= 1
+            right=points.pop()
         else:
-            points[-1] = Point(xm, fm)
-            points.append(right)
-            sz += 1
+            points.append(Point(xm, fm))
     return total_area+comp
 
 @nb.jit(nopython=True)
