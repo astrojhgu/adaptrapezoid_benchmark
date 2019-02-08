@@ -8,34 +8,38 @@ RAM: 16 GB
 
 ## Results
 ### C
-75.54 ms
+71.03 ms
 ### C++
-77.752 ms
+83.36 ms
 ### Rust
-71.815 ms
+74.00 ms
 ### Haskell
-148.9 ms
+176.6 ms
 ### CPython
-2243.94
+2885.99
 ### CPython-numba
-108.95 ms
+113.41 ms
 ### pypy
-104.89 ms
+94.77 ms
 ### jython
-2164.00 ms
+2659.70 ms
 ### Julia (generic)
-86.984 ms
+72.872 ms
 ### Julia (with explicit type annotation)
-87.207 ms
+71.186 ms
 ### Julia (without any type annotation)
-616.714 ms
+692.176 ms
 ### C#
-N/A
+141.3 ms
 ### Scala (Implementation similar to C++, generic style)
-N/A
+233.94 ms
 ### Scala (Implementation similar to C++, non-generic style)
-N/A
+206.00
 ### Scala (More functional, iteration-based, generic style)
-N/A
+294.53
 ### Scala (More functional, tailrec-based, generic style)
-N/A
+369.66
+### Scala (More functional, iteration-based, non-generic style)
+282.84
+### Scala (More functional, tailrec-based, non-generic style)
+270.93
