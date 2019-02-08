@@ -22,54 +22,71 @@ object Integrate {
     (p1.f+p2.f)*(p2.x-p1.x)/2
   }
 
+  final def neumaier_sum[T:Fractional](x:T, sum:T, comp:T):(T,T)={
+      //https://en.wikipedia.org/wiki/Kahan_summation_algorithm
+      val t=sum+x;
+      val comp1=
+      if (Fractional[T].abs(sum)>=Fractional[T].abs(x)){
+          comp+((sum-t)+x);
+      }else{
+          comp+((x-t)+ sum);
+      };
+      val sum1=t;
+      (sum1, comp1)
+  }
+
 
   @tailrec
-  final def integrate_rec[T:Fractional:Ordering](func:T=>T, eps:T, points:List[Point[T]], areas:List[T]):(List[Point[T]], List[T])={
+  final def integrate_rec[T:Fractional:Ordering](func:T=>T, eps:T, points:List[Point[T]], total_area:T, comp:T):(List[Point[T]], T, T)={
     points match {
       case left::right::others=>{
         val midpoint=this.midpoint(func, left, right)
         if (Fractional[T].abs(left.f+right.f-midpoint.f*2)<=eps){
-          integrate_rec(func, eps, right::others, area(left, right)::areas)
+          val (a, c)=neumaier_sum(area(left, right), total_area, comp);
+          integrate_rec(func, eps, right::others, a, c)
         }else{
-          integrate_rec(func, eps, left::midpoint::right::others, areas)
+          integrate_rec(func, eps, left::midpoint::right::others, total_area, comp)
         }
       }
-      case _ =>(points, areas)
+      case _ =>(points, total_area, comp)
     }
   }
 
   final def perform_rec[T:Fractional:Ordering](func:T=>T, init_ticks:List[T], eps:T):T={
     val points=init_ticks.map(x=>new Point[T](x, func(x)))
     val eps1=eps*4/(init_ticks.last-init_ticks.head)
-    val areas=integrate_rec(func, eps1, points, Nil)._2
-    areas.sortBy(x => Fractional[T].abs(x)).foldLeft(Fractional[T].zero){(a,b)=>{a+b}}
+    val (_, total_area, comp)=integrate_rec(func, eps1, points, Fractional[T].zero, Fractional[T].zero);
+    total_area+comp
   }
 
-  final def integrate_iter[T:Fractional:Ordering](func:T=>T, eps:T, points:List[Point[T]], areas:List[T]):(List[Point[T]], List[T])= {
+  final def integrate_iter[T:Fractional:Ordering](func:T=>T, eps:T, points:List[Point[T]], total_area:T, comp:T):(List[Point[T]], T, T)= {
     points match {
       case left::right::others=>{
         val midpoint=this.midpoint(func, left, right)
         if (Fractional[T].abs(left.f+right.f-midpoint.f*2)<=eps){
-          (right::others, area(left, right)::areas)
+          val (a, c)=neumaier_sum(area(left, right), total_area, comp);
+          (right::others, a, c)
         }else{
-          (left::midpoint::right::others, areas)
+          (left::midpoint::right::others, total_area, comp)
         }
       }
-      case _ =>(points, areas)
+      case _ =>(points, total_area, comp)
     }
   }
 
   final def perform_iter[T:Fractional:Ordering](func:T=>T, init_ticks:List[T], eps:T):T={
     var points=init_ticks.map(x=>new Point[T](x, func(x)))
     val eps1=eps*4/(init_ticks.last-init_ticks.head)
-    var areas:List[T]=Nil
+    var total_area=Fractional[T].zero;
+    var comp=Fractional[T].zero;
 
     while (points.size>1){
-      val result=integrate_iter(func, eps1, points, areas)
+      val result=integrate_iter(func, eps1, points, total_area, comp)
       points=result._1
-      areas=result._2
+      total_area=result._2
+      comp=result._3
     }
-    areas.sortBy(x => Fractional[T].abs(x)).foldLeft(Fractional[T].zero){(a,b)=>{a+b}}
+    total_area+comp
   }
 
 }

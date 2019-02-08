@@ -21,6 +21,20 @@ object Integrate {
     new Point[T](xm, func(xm))
   }
 
+  final def neumaier_sum[T:Fractional](x:T, sum:T, comp:T):(T,T)={
+    //https://en.wikipedia.org/wiki/Kahan_summation_algorithm
+    val t=sum+x;
+    val comp1=
+    if (Fractional[T].abs(sum)>=Fractional[T].abs(x)){
+        comp+((sum-t)+x);
+    }else{
+        comp+((x-t)+ sum);
+    };
+    val sum1=t;
+    (sum1, comp1)
+  }
+
+
   final def integrate[T:Fractional:Ordering](func:T=>T, ticks:List[T], eps1:T):T= {
     if(ticks.size<2){
       return Fractional[T].zero;
@@ -32,7 +46,8 @@ object Integrate {
     val quarter=one/four;
     val full_width=ticks.last-ticks.head;
     val eps:T=eps1*four/full_width;
-    var areas=ArrayBuffer[T]();
+    var total_area=Fractional[T].zero;
+    var comp=Fractional[T].zero;
     val points=new ArrayStack[Point[T]]()
     for (i<-ticks){
       val p=new Point[T](i, func(i));
@@ -47,14 +62,15 @@ object Integrate {
       val diff=Fractional[T].abs(left.f+right.f-mid.f*two);
       //System.out.println(left.x);
       if(diff<=eps){
-        areas.append((left.f+right.f+mid.f*two)*(right.x-left.x)*quarter);
+        val (a, c)=neumaier_sum((left.f+right.f+mid.f*two)*(right.x-left.x)*quarter, total_area, comp);
+        total_area=a;
+        comp=c;
       }else{
         points.push(mid);
         points.push(right);
       }
     }
-
-    areas.sortBy(x => Fractional[T].abs(x)).foldLeft(Fractional[T].zero){(a,b)=>{a+b}}
+    total_area+comp
   }
 }
 

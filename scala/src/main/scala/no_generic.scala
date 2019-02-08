@@ -20,54 +20,72 @@ object Integrate {
     (p1.f+p2.f)*(p2.x-p1.x)/2
   }
 
+  final def neumaier_sum(x:Double, sum:Double, comp:Double):(Double, Double)={
+    //https://en.wikipedia.org/wiki/Kahan_summation_algorithm
+    val t=sum+x;
+    val comp1=
+    if (abs(sum)>=abs(x)){
+        comp+((sum-t)+x);
+    }else{
+        comp+((x-t)+ sum);
+    };
+    val sum1=t;
+    (sum1, comp1)
+  }
+
+
 
   @tailrec
-  final def integrate_rec(func:Double=>Double, eps:Double, points:List[Point], areas:List[Double]):(List[Point], List[Double])={
+  final def integrate_rec(func:Double=>Double, eps:Double, points:List[Point], total_area:Double, comp:Double):(List[Point], Double, Double)={
     points match {
       case left::right::others=>{
         val midpoint=this.midpoint(func, left, right)
         if (abs(left.f+right.f-midpoint.f*2)<=eps){
-          integrate_rec(func, eps, right::others, area(left, right)::areas)
+          val (a, c)=neumaier_sum(area(left, right), total_area, comp);
+          integrate_rec(func, eps, right::others, a, c)
         }else{
-          integrate_rec(func, eps, left::midpoint::right::others, areas)
+          integrate_rec(func, eps, left::midpoint::right::others, total_area, comp)
         }
       }
-      case _ =>(points, areas)
+      case _ =>(points, total_area, comp)
     }
   }
 
   final def perform_rec(func:Double=>Double, init_ticks:List[Double], eps:Double):Double={
     val points=init_ticks.map(x=>new Point(x, func(x)))
     val eps1=eps*4/(init_ticks.last-init_ticks.head)
-    val areas=integrate_rec(func, eps1, points, Nil)._2
-    areas.sortBy(x => abs(x)).foldLeft(0.0){(a,b)=>{a+b}}
+    val (_, total_area, comp)=integrate_rec(func, eps1, points, 0.0, 0.0)
+    total_area+comp
   }
 
-  final def integrate_iter(func:Double=>Double, eps:Double, points:List[Point], areas:List[Double]):(List[Point], List[Double])= {
+  final def integrate_iter(func:Double=>Double, eps:Double, points:List[Point], total_area:Double, comp:Double):(List[Point], Double, Double)= {
     points match {
       case left::right::others=>{
         val midpoint=this.midpoint(func, left, right)
         if (abs(left.f+right.f-midpoint.f*2)<=eps){
-          (right::others, area(left, right)::areas)
+          val (a, c)=neumaier_sum(area(left, right), total_area, comp)
+          (right::others, a, c)
         }else{
-          (left::midpoint::right::others, areas)
+          (left::midpoint::right::others, total_area, comp)
         }
       }
-      case _ =>(points, areas)
+      case _ =>(points, total_area, comp)
     }
   }
 
   final def perform_iter(func:Double=>Double, init_ticks:List[Double], eps:Double):Double={
     var points=init_ticks.map(x=>new Point(x, func(x)))
     val eps1=eps*4/(init_ticks.last-init_ticks.head)
-    var areas:List[Double]=Nil
+    var total_area=0.0;
+    var comp=0.0;
 
     while (points.size>1){
-      val result=integrate_iter(func, eps1, points, areas)
+      val result=integrate_iter(func, eps1, points, total_area, comp)
       points=result._1
-      areas=result._2
+      total_area=result._2
+      comp=result._3;
     }
-    areas.sortBy(x => abs(x)).foldLeft(0.0){(a,b)=>{a+b}}
+    total_area+comp
   }
 
 }
