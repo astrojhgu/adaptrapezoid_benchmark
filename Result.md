@@ -34,12 +34,12 @@ RAM: 16 GB
 ### Scala (Implementation similar to C++, generic style)
 233.94 ms
 ### Scala (Implementation similar to C++, non-generic style)
-206.00
+206.00 ms
 ### Scala (More functional, iteration-based, generic style)
-294.53
+294.53 ms
 ### Scala (More functional, tailrec-based, generic style)
-369.66
+369.66 ms
 ### Scala (More functional, iteration-based, non-generic style)
-282.84
+282.84 ms
 ### Scala (More functional, tailrec-based, non-generic style)
-270.93
+270.93 ms
