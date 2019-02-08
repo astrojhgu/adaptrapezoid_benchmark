@@ -8,7 +8,7 @@ RAM: 16 GB
 
 ## Results
 ### C
-N/A ms
+75.54 ms
 ### C++
 77.752 ms
 ### Rust

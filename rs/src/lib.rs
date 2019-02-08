@@ -42,12 +42,9 @@ where
         .iter()
         .map(|&x| Point::<T> { x, f: func(x) })
         .collect();
-    //let mut right=*points.last().unwrap();
-    let mut right;
-
+    let mut right=points.pop().unwrap();
     let eps = eps * four / full_width;
-    while points.len() > 1 {
-        right = points.pop().unwrap();
+    while !points.is_empty() {
         let left = *points.last().unwrap();
         let mid = (left.x + right.x) * half;
         let fmid = func(mid);
@@ -57,12 +54,10 @@ where
             let (s, c)=neumaier_sum(area, total_area, comp);
             total_area=s;
             comp=c;
-        //points.pop();
-        //right=left;
+            right=left;
+            points.pop();
         } else {
-            //points.pop();
             points.push(Point::<T> { x: mid, f: fmid });
-            points.push(right);
         }
     }
     total_area+comp
