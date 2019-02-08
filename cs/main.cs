@@ -50,20 +50,20 @@ namespace adapt
             }
 
             var full_width=init_ticks.Last()-init_ticks.First();
-            Point right;
+            Point right=points.Pop();
             double eps=eps1*4.0/full_width;
-            while(points.Count>1){
+            while(points.Count>0){
                 //Console.WriteLine(points.Count);
-                right=points.Pop();
                 var left=points.Peek();
                 var mid=Integration.midpoint(ref left, ref right, f);
                 if(Math.Abs(left.f+right.f-mid.f*2.0)<=eps){
                     //areas.Add((left.f+right.f+mid.f*2.0)*(right.x-left.x)/4.0);
                     double area=(left.f+right.f+mid.f*2.0)*(right.x-left.x)/4.0;
                     (total_area, comp)=neumaier_sum(total_area, area, comp);
+
+                    right=points.Pop();
                 }else{
                     points.Push(mid);
-                    points.Push(right);
                 }
             }
             return total_area+comp;
