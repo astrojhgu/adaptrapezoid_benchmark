@@ -54,9 +54,8 @@ object Integrate {
       points.push(p)
     }
 
-    var right=points.top
-    while(points.length>1){
-      right=points.pop();
+    var right=points.pop()
+    while(points.length>0){
       val left=points.top;
       val mid=midpoint(func, left, right)
       val diff=Fractional[T].abs(left.f+right.f-mid.f*two);
@@ -65,9 +64,9 @@ object Integrate {
         val (a, c)=neumaier_sum((left.f+right.f+mid.f*two)*(right.x-left.x)*quarter, total_area, comp);
         total_area=a;
         comp=c;
+        right=points.pop();
       }else{
         points.push(mid);
-        points.push(right);
       }
     }
     total_area+comp
