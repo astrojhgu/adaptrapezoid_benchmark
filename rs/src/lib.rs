@@ -9,16 +9,17 @@ struct Point<T> {
     f: T,
 }
 
-fn neumaier_sum<T>(x:T, mut sum:T, mut comp:T)->(T, T)
+fn neumaier_sum<T>(x:T, mut sum:T, comp:T)->(T, T)
 where T:Float+Debug
 {
     //https://en.wikipedia.org/wiki/Kahan_summation_algorithm
     let t=sum+x;
+    let comp=comp+
     if sum.abs()>=x.abs(){
-        comp=comp+((sum-t)+x);
+        ((sum-t)+x)
     }else{
-        comp=comp+((x-t)+sum);
-    }
+        ((x-t)+sum)
+    };
     sum=t;
     (sum, comp)
 }
@@ -34,7 +35,7 @@ where
     let two = T::one() + T::one();
     let four = two + two;
     let half = T::one() / two;
-    let quarter = half / two;
+    let quarter = T::one() / four;
     let full_width = *init_ticks.last().unwrap() - *init_ticks.first().unwrap();
     let mut total_area = T::zero();
     let mut comp = T::zero();

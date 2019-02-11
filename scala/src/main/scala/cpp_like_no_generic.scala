@@ -76,10 +76,12 @@ object Integrate {
 
 object Main {
   def main(args: Array[String]): Unit = {
+    val precise_result=0.527038339761566009286263102166809763899326865179511011538;
     for (i <- 1 to 100) {
       val xx = Integrate.integrate(x => sin(x * x), List(0.0, 1.0, 2.0, sqrt(8.0 * scala.math.Pi)), 1e-10);
       //val xx = Integrate.perform_rec[Double](x => (x * x), List(0.0, 1.0), 1e-10);
-      System.out.println(xx);
+      System.out.print("diff=");
+      System.out.println(abs(precise_result-xx));    
     }
   }
 }

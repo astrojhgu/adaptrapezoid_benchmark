@@ -2,6 +2,7 @@
 #define ADAPT_HPP
 #include <tuple>
 #include <algorithm>
+#include <iostream>
 #include <cmath>
 #include <iterator>
 #include <numeric>
@@ -57,8 +58,9 @@ template <typename T, typename F> T integrate(F func, T eps, std::vector<T> tick
         }
     constexpr T kHalf = T{ 0.5 }, kQuarter = T{ 0.25 };
     constexpr T kTwo = T{ 2 }, kFour = T{ 4 };
+    
     eps = eps * kFour / (ticks.back () - ticks.front ());
-
+    
     T total_area{};
     T comp{};
     std::stack<Point<T>, std::vector<Point<T>>> ps;
@@ -67,8 +69,10 @@ template <typename T, typename F> T integrate(F func, T eps, std::vector<T> tick
     }
     Point<T> right=ps.top();
     ps.pop();
+    size_t loop_cnt=0;
     while (!ps.empty())
         {
+            loop_cnt+=1;
             Point<T> left = ps.top();
             Point<T> midp = midpoint (func, left, right);
             if (std::abs (left.f + right.f - midp.f * kTwo) <= eps)
@@ -82,8 +86,8 @@ template <typename T, typename F> T integrate(F func, T eps, std::vector<T> tick
                 {
                     ps.push(midp);
                 }
-
         }
+    std::cout<<loop_cnt<<std::endl;
     return total_area+comp;
 }
 

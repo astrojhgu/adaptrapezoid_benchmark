@@ -30,7 +30,9 @@ BENCHMARK (run);
 
 int main (int argc, char* argv[]) {
     constexpr double precise_answer=0.527038339761566009286263102166809763899326865179511011538;
-    assert(precise_answer-integrate (foo, tol, std::vector<double>{ 0.0, 1.0, 2.0, std::sqrt (8.0 * PI) })<tol);
+    double result=integrate (foo, tol, std::vector<double>{ 0.0, 1.0, 2.0, std::sqrt (8.0 * PI) });
+    assert(precise_answer-result<tol);
+    std::cout<<"diff="<<std::setprecision(12)<<std::abs(precise_answer-result)<<std::endl;
  
     benchmark::Initialize (& argc, argv);
     benchmark::RunSpecifiedBenchmarks ();
