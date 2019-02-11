@@ -19,19 +19,22 @@ function neumaier_sum(x::T, sum::T, comp::T)::Tuple{T, T} where {T<:AbstractFloa
     (sum, comp)
 end
 
-function integrate(func::Function, ticks::Array{T,1}, eps::T)::T where {T<:AbstractFloat }
+function integrate(func::Function, ticks::Array{T,1}, eps1::T)::T where {T<:AbstractFloat }
     if length(ticks)<2
         return 0.0
     end
-    points::Array{Point{T}, 1}=[Point(x, func(x)) for x in ticks]
+    #points::Array{Point{T}, 1}=[Point(x, func(x)) for x in ticks]
+    points=map(x->Point(x, func(x)), ticks)
     full_width=last(ticks)-first(ticks)
+    eps=eps1*4.0/full_width
+    #eps=eps1*4.0/full_width
     total_area=0.0::T
     comp=0.0::T
     #right=last(points)
     right=pop!(points)
-    while length(points)>0
+    while !isempty(points)
         left=last(points)
-        mid=(left.x+right.x)/2.0
+        mid=(left.x+right.x)/2.0::T
         fmid=func(mid)
         if abs(left.f+right.f-fmid*2.0)<=eps
             area=((left.f+right.f+fmid*2.0)*(right.x-left.x)/4.0)::T

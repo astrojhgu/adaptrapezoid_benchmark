@@ -19,16 +19,17 @@ function neumaier_sum(x, sum, comp)
     (sum, comp)
 end
 
-function integrate(func, ticks, eps)
+function integrate(func, ticks, eps1)
     if length(ticks)<2
         return 0.0
     end
-    points=[Point(x, func(x)) for x in ticks]
+    points=map(x->Point(x, func(x)), ticks)
     full_width=last(ticks)-first(ticks)
+    eps=eps1*4.0/full_width
     total_area=0.0
     comp=0.0
     right=pop!(points)
-    while length(points)>0
+    while !isempty(points)
         left=last(points)
         mid=(left.x+right.x)/2.0
         fmid=func(mid)

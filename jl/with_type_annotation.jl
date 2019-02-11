@@ -19,16 +19,17 @@ function neumaier_sum(x::Float64, sum::Float64, comp::Float64)::Tuple{Float64, F
     (sum, comp)
 end
 
-function integrate(func::Function, ticks::Array{Float64,1}, eps::Float64)::Float64
+function integrate(func::Function, ticks::Array{Float64,1}, eps1::Float64)::Float64
     if length(ticks)<2
         return 0.0
     end
-    points::Array{Point, 1}=[Point(x, func(x)) for x in ticks]
+    points=map(x->Point(x, func(x)), ticks)
     full_width=last(ticks)-first(ticks)
+    eps=eps1*4.0/full_width
     total_area=0.0
     comp=0.0
     right=pop!(points)
-    while length(points)>0
+    while !isempty(points)
         left=last(points)
         mid=(left.x+right.x)/2.0
         fmid=func(mid)
